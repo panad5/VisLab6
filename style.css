@@ -1,0 +1,26 @@
+  
+body {
+    text-align: center;
+    }
+    #group-by, #sort{
+        background-color:rgb(191, 191, 189);
+        transition-duration: 0.4s;
+     }
+    
+    #group-by:hover{
+        background-color: rgb(100, 100, 100);
+        color: white;   
+    }
+    
+    #sort:hover{
+        background-color: rgb(100, 100, 100);
+        color: white;   
+    }
+    
+    .x-axis{
+    font-size: 11px;    
+    }
+    
+    .y-axis{
+        font-size: 10px;    
+        }
