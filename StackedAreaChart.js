@@ -38,9 +38,9 @@ export default function StackedAreaChart(container) {
         .append("text")
         .attr('x', 0)
         .attr('y', -10)
-        .attr('font-size', 10);
+        .attr('font-size', 14);
 
-        svg.append("clipPath")
+    svg.append("clipPath")
     .attr("id", "clip")
     .append("rect")
     .attr("width", width)// the size of clip-path is the same as
