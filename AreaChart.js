@@ -14,7 +14,6 @@ export default function AreaChart(container){
     .attr('width', outerWidth)
     .attr('height', outerHeight)
     .append("g")
-    .classed(".chart-svg", true);
 
  const xScale = d3.scaleTime()
             .rangeRound([0, width])    
@@ -26,41 +25,40 @@ const yScale = d3.scaleLinear()
     const yAxis = d3.axisLeft().ticks(3).scale(yScale);
     
 const x_axis = svg.append("g").attr("class", "axis x-axis")
-    .attr("transform", `translate(${margin.left}, ${margin.top + height})`)
+    .attr("transform", `translate(${margin.left}, ${margin.top + height - 40})`)
     .call(xAxis);
 
     const y_axis = svg.append("g").attr("class", "axis y-axis")
-        .attr("transform", `translate(${margin.left}, ${margin.top})`)
+        .attr("transform", `translate(${margin.left}, ${margin.top  -40})`)
         .call(yAxis);
-
-    svg.append("path")
-    .attr('class', 'areaTotal');
-
-    let area = d3.area()
-    .x(function(d) { return xScale(d.date); })
-    .y0(function() { return yScale(0); })
-    .y1(function(d) { return yScale(d.total); })
 
     const brush = d3.brushX()
     .extent([
-      [margin.left, margin.top],
-      [width + margin.left, height + margin.top],
+      [margin.left, margin.top - 40],
+      [width + margin.left, height + margin.top - 40],
     ])
     .on("brush", brushed);
 
 svg.append("g").attr("class", "brush").call(brush);
 
 	function update(data){ 
+
         xScale.domain(d3.extent(data, d=>d.date));
         yScale.domain([0, d3.max(data, d=>d.total)]);
+
+        const area = d3.area()
+            .x(d=>xScale(d.date) + 40)
+            .y0(yScale(0))
+            .y1(d=>yScale(d.total))
+
+        svg.append("path")
+        .attr('class', 'area')
+        .attr('fill', 'teal')
+        .datum(data)
+        .attr("d", area)
+        
         x_axis.call(xAxis);
         y_axis.call(yAxis);
-
-        d3.select(".areaTotal")
-        .data(data)
-        .attr("d", area)
-
-        //path.data(data).attr("fill", "orange").attr("d", areaTotal);
     }
     
     function on(event, listener) {
@@ -68,7 +66,8 @@ svg.append("g").attr("class", "brush").call(brush);
     }
     function brushed(event) {
         if (event.selection) {
-        const select = event.selection.map((d) => d - margin.left);
+            console.log("brushed", event.selection)
+        event.selection.map((d) => d - margin.left);
         listeners["brushed"](event.selection.map(xScale.invert))
         }
     }

@@ -40,6 +40,12 @@ export default function StackedAreaChart(container) {
         .attr('y', -10)
         .attr('font-size', 10);
 
+        svg.append("clipPath")
+    .attr("id", "clip")
+    .append("rect")
+    .attr("width", width)// the size of clip-path is the same as
+    .attr("height", height); // the chart area
+
 	function update(data){
         var keys = selected? [selected]: data.columns.slice(1,-1);
         var stack = d3.stack()
@@ -50,7 +56,7 @@ export default function StackedAreaChart(container) {
         var series = stack(data);
         colors.domain(keys);
 
-        xScale.domain([d3.min(data, d=>d.date), d3.max(data,d=>d.date)]);
+        xScale.domain(xDomain ? xDomain : d3.extent(data, d => d.date))
         yScale.domain([0, d3.max(series, a => d3.max(a, d=>d[1])) 
         ]);
 
@@ -66,7 +72,7 @@ export default function StackedAreaChart(container) {
             .append("path")
             .attr("clip-path", "url(#chart-area)")
             .attr("class", "area")
-            .attr("id", function(d) { return "myArea " + d.key })
+            .attr("id", function(d) { return d.key })
             .style("fill", function(d) { return colors(d.key); })
             .on("mouseover", (event, d, i) => tooltip.text(d.key))
             .on("mouseout", (event, d, i) => tooltip.text(''))
